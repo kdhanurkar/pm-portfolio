@@ -5,7 +5,7 @@ and live demos — built with HTML and deployed via GitHub Pages.
 
 ## Live Site
 
-[View Portfolio →](https://yourusername.github.io/pm-portfolio/)
+[View Portfolio →](https://kdhanurkar.github.io/pm-portfolio/)
 
 ## Projects
 
@@ -14,7 +14,7 @@ An AI-powered adaptive listening engine that evolves music in real time based
 on mood, context, and behavior signals.
 
 - Problem framing · User flow · Feature spec · Success metrics · Launch roadmap
-- [View case study →](https://kdhanurkar.github.io/pm-portfolio.html)
+- [View case study →](https://kdhanurkar.github.io/pm-portfolio/)
 
 <!-- Add new projects here as you build them -->
 
