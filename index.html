@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PM Portfolio — AI Feature Proposals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1c1c1c;
+      --surface3: #242424;
+      --text: #f0efe8;
+      --text-muted: #888;
+      --text-dim: #444;
+      --accent: #1DB954;
+      --warn: #f59e0b;
+      --info: #60a5fa;
+      --coral: #ff6b6b;
+      --border: #222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      padding: 1rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 0.5px solid #1a1a1a;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .nav-name span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.75rem; }
+    .nav-links a {
+      font-size: 12px; color: var(--text-muted); text-decoration: none;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 7rem 2.5rem 5rem;
+      max-width: 900px; margin: 0 auto;
+      position: relative;
+    }
+    .hero-kicker {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-kicker::before { content: ''; width: 20px; height: 1.5px; background: var(--accent); display: block; }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800; line-height: 1.02;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em { color: var(--accent); font-style: normal; }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--text-muted); font-weight: 300;
+      max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font-size: 11px; font-weight: 500; padding: 5px 12px;
+      border-radius: 100px; border: 0.5px solid;
+    }
+    .chip-green { color: var(--accent); border-color: #1DB95440; background: #1DB95410; }
+    .chip-blue  { color: var(--info);   border-color: #60a5fa40; background: #60a5fa10; }
+    .chip-amber { color: var(--warn);   border-color: #f59e0b40; background: #f59e0b10; }
+    .chip-dim   { color: var(--text-muted); border-color: #333; background: transparent; }
+
+    /* ── SECTION WRAPPER ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 2.5rem; }
+
+    /* ── CASE STUDY CARD ── */
+    .case-study {
+      border: 0.5px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      margin-bottom: 5rem;
+      background: #0f0f0f;
+    }
+
+    /* Card header */
+    .cs-header {
+      padding: 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .cs-header-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 50% 100% at 90% 0%, #1DB95414, transparent 70%),
+        radial-gradient(ellipse 40% 80% at 5% 100%, #60a5fa0a, transparent 60%);
+    }
+    .cs-meta {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .cs-company {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .cs-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
+    .cs-type { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .cs-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 0.75rem; line-height: 1.1;
+    }
+    .cs-title span { color: var(--accent); }
+    .cs-tagline { font-size: 0.95rem; color: var(--text-muted); font-weight: 300; max-width: 500px; line-height: 1.6; }
+
+    /* Stats row */
+    .cs-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 0.5px solid var(--border);
+    }
+    .stat {
+      padding: 1.25rem 1.5rem;
+      border-right: 0.5px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 3px;
+    }
+    .stat-value.green { color: var(--accent); }
+    .stat-value.blue  { color: var(--info); }
+    .stat-value.amber { color: var(--warn); }
+    .stat-label { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+
+    /* Content sections inside card */
+    .cs-body { padding: 2.5rem; }
+    .cs-section { margin-bottom: 2.5rem; }
+    .cs-section:last-child { margin-bottom: 0; }
+    .cs-section-label {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--text-dim);
+      margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .cs-section-label::after { content: ''; flex: 1; height: 0.5px; background: #1e1e1e; }
+
+    /* Problem grid */
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .prob-card {
+      background: var(--surface); border-radius: 12px;
+      border: 0.5px solid #1e1e1e; padding: 1rem 1.1rem;
+    }
+    .prob-icon { font-size: 18px; margin-bottom: 8px; }
+    .prob-title { font-size: 12.5px; font-weight: 500; margin-bottom: 4px; }
+    .prob-body { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* Flow */
+    .flow { display: flex; flex-direction: column; }
+    .flow-step { display: flex; gap: 1rem; position: relative; }
+    .flow-step:not(:last-child)::after {
+      content: ''; position: absolute; left: 15px; top: 32px;
+      width: 1px; height: calc(100% - 4px);
+      background: linear-gradient(to bottom, #2a2a2a, #161616);
+    }
+    .flow-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--surface2); border: 0.5px solid #2a2a2a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+      position: relative; z-index: 1;
+    }
+    .flow-step.hi .flow-num { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+    .flow-content { padding: 4px 0 1.5rem; }
+    .flow-title { font-size: 13.5px; font-weight: 500; margin-bottom: 3px; }
+    .flow-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+
+    /* Spec table */
+    .spec-tbl { width: 100%; border-collapse: collapse; }
+    .spec-tbl tr { border-bottom: 0.5px solid #1a1a1a; }
+    .spec-tbl tr:last-child { border-bottom: none; }
+    .spec-tbl td { padding: 10px 0; font-size: 13px; vertical-align: top; line-height: 1.6; }
+    .spec-tbl td:first-child {
+      color: var(--text-dim); font-size: 10.5px; font-weight: 500;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      width: 120px; padding-right: 1.25rem; padding-top: 12px;
+    }
+    .pill {
+      display: inline-block; padding: 3px 9px; border-radius: 100px;
+      font-size: 11px; font-weight: 500; margin: 2px 3px 2px 0;
+    }
+    .pill-r { background: #ff6b6b14; color: #ff9090; border: 0.5px solid #ff6b6b28; }
+    .pill-a { background: #f59e0b14; color: #fbbf24; border: 0.5px solid #f59e0b28; }
+    .pill-b { background: #60a5fa14; color: #93c5fd; border: 0.5px solid #60a5fa28; }
+
+    /* Metrics */
+    .metrics-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1.25rem; }
+    .m-card {
+      background: var(--surface); border-radius: 12px;
+      border: 0.5px solid #1e1e1e; padding: 1rem; text-align: center;
+    }
+    .m-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .m-val.g { color: var(--accent); }
+    .m-val.b { color: var(--info); }
+    .m-val.a { color: var(--warn); }
+    .m-lbl { font-size: 11px; color: var(--text-dim); line-height: 1.45; }
+
+    /* Guardrails */
+    .rail { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; }
+    .rdot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+    .rdot.g { background: var(--accent); }
+    .rdot.r { background: var(--coral); }
+    .rtxt { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+    /* Roadmap */
+    .roadmap { display: flex; }
+    .rm-phase { flex: 1; border-top: 2px solid var(--surface3); padding-top: 10px; padding-right: 12px; position: relative; }
+    .rm-phase::before { content: ''; position: absolute; top: -5px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--surface3); }
+    .rm-phase.done::before { background: var(--accent); }
+    .rm-phase.now::before  { background: var(--info); }
+    .rm-q { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.11em; margin-bottom: 4px; }
+    .rm-t { font-size: 11.5px; font-weight: 500; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── PLACEHOLDER CARDS ── */
+    .placeholder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 5rem; }
+    .ph-card {
+      border: 0.5px dashed #2a2a2a; border-radius: 16px;
+      padding: 2rem; min-height: 200px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: border-color 0.25s;
+      cursor: default;
+    }
+    .ph-card:hover { border-color: #3a3a3a; }
+    .ph-top { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+    .ph-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--surface2); border: 0.5px solid #2a2a2a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .ph-co { font-size: 12px; font-weight: 500; color: var(--text-dim); }
+    .ph-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: #2d2d2d; margin-bottom: 6px; }
+    .ph-sub { font-size: 12px; color: #2a2a2a; }
+    .ph-badge {
+      display: inline-block; font-size: 10px; color: #2d2d2d;
+      border: 0.5px dashed #2a2a2a; border-radius: 100px; padding: 3px 10px;
+      margin-top: 1rem; align-self: flex-start;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 0.5px solid #1a1a1a;
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-left { font-size: 12px; color: var(--text-dim); }
+    .footer-left span { color: var(--accent); }
+    .footer-right { font-size: 11px; color: #2d2d2d; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-kicker  { animation: fadeUp 0.5s ease both; }
+    .hero-title   { animation: fadeUp 0.5s 0.1s ease both; }
+    .hero-desc    { animation: fadeUp 0.5s 0.2s ease both; }
+    .hero-chips   { animation: fadeUp 0.5s 0.3s ease both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 1rem; }
+      .hero { padding: 4rem 1.25rem 3rem; }
+      .container { padding: 0 1.25rem; }
+      .cs-header { padding: 1.5rem; }
+      .cs-body { padding: 1.5rem; }
+      .cs-stats { grid-template-columns: 1fr 1fr; }
+      .stat:nth-child(2) { border-right: none; }
+      .prob-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .roadmap { flex-direction: column; gap: 14px; }
+      .rm-phase { border-top: none; border-left: 2px solid var(--surface3); padding: 0 0 0 14px; }
+      .rm-phase::before { top: 4px; left: -5px; }
+      .placeholder-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 6px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-name">PM <span>Portfolio</span></div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="mailto:you@email.com">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">Product Management · AI Features</div>
+  <h1 class="hero-title">Building products<br>people <em>feel.</em></h1>
+  <p class="hero-desc">I'm a PM focused on AI-powered experiences — turning complex technology into features that are intuitive, delightful, and measurably better for users.</p>
+  <div class="hero-chips">
+    <span class="chip chip-green">AI / ML Products</span>
+    <span class="chip chip-blue">0→1 Feature Work</span>
+    <span class="chip chip-amber">Growth & Retention</span>
+    <span class="chip chip-dim">B2C · Consumer</span>
+  </div>
+</div>
+
+<!-- WORK -->
+<div class="container" id="work">
+
+  <!-- ── CASE STUDY 1: SPOTIFY ── -->
+  <div class="case-study">
+
+    <div class="cs-header">
+      <div class="cs-header-bg"></div>
+      <div class="cs-meta">
+        <span class="cs-company">Spotify</span>
+        <span class="cs-dot"></span>
+        <span class="cs-type">AI Feature Proposal</span>
+      </div>
+      <h2 class="cs-title">Mood <span>Journey</span></h2>
+      <p class="cs-tagline">An adaptive listening engine that evolves music in real time — matching energy, emotion, and context as your day unfolds.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="cs-stats">
+      <div class="stat">
+        <div class="stat-value green">–22%</div>
+        <div class="stat-label">Skip rate target</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value blue">+18 min</div>
+        <div class="stat-label">Daily listening uplift</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value amber">+11%</div>
+        <div class="stat-label">Artist discovery rate</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value green">D30 +8%</div>
+        <div class="stat-label">Retention uplift</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="cs-body">
+
+      <!-- PROBLEM -->
+      <div class="cs-section">
+        <div class="cs-section-label">The Problem</div>
+        <div class="prob-grid">
+          <div class="prob-card">
+            <div class="prob-icon">🎵</div>
+            <div class="prob-title">Playlists are frozen in time</div>
+            <div class="prob-body">Your "Chill Morning" mix doesn't know you're now three coffees deep and sprinting to a deadline.</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-icon">😶</div>
+            <div class="prob-title">Skip fatigue is real</div>
+            <div class="prob-body">Users skip 30% of songs — not because they dislike the track, but because it doesn't fit the moment.</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-icon">🔄</div>
+            <div class="prob-title">Context shifts constantly</div>
+            <div class="prob-body">Commute → focus work → gym → wind-down. One playlist cannot serve all four moods.</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-icon">📉</div>
+            <div class="prob-title">Discovery drops off</div>
+            <div class="prob-body">Users stick to 10–15 familiar songs on repeat, limiting exposure to Spotify's 100M+ track catalog.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USER FLOW -->
+      <div class="cs-section">
+        <div class="cs-section-label">User Flow</div>
+        <div class="flow">
+          <div class="flow-step hi">
+            <div class="flow-num">1</div>
+            <div class="flow-content">
+              <div class="flow-title">Mood check-in (optional)</div>
+              <div class="flow-desc">User opens Spotify. A subtle card asks "How are you feeling?" — or the system infers from time, calendar, and listening history. No mandatory friction.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-content">
+              <div class="flow-title">Mood Journey session starts</div>
+              <div class="flow-desc">A dynamic queue is generated — a living arc that evolves across 30 / 60 / 90 min. Opening tracks match current mood.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-content">
+              <div class="flow-title">Real-time signal collection</div>
+              <div class="flow-desc">Skip behavior, listening duration, time of day, and BPM engagement feed a continuous feedback loop. Model recalibrates every ~5 tracks.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-content">
+              <div class="flow-title">Mood arc transitions</div>
+              <div class="flow-desc">Music shifts in tempo and valence — from focus-mode instrumentals → mid-energy pop → calming lo-fi as evening arrives.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-content">
+              <div class="flow-title">Journey recap + discovery card</div>
+              <div class="flow-desc">Session summary shows energy evolution and surfaces 3 new artists aligned to the user's emotional arc. CTA: Save as playlist.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURE SPEC -->
+      <div class="cs-section">
+        <div class="cs-section-label">Feature Spec</div>
+        <table class="spec-tbl">
+          <tr>
+            <td>Core engine</td>
+            <td>Multimodal ML model trained on audio features (tempo, valence, energy, danceability), listening sequences, skip patterns, and contextual signals (time, calendar, weather via opt-in).</td>
+          </tr>
+          <tr>
+            <td>Signals</td>
+            <td>
+              <span class="pill pill-r">Skip rate</span>
+              <span class="pill pill-r">Listen duration</span>
+              <span class="pill pill-a">Time of day</span>
+              <span class="pill pill-a">Calendar (opt-in)</span>
+              <span class="pill pill-b">BPM trajectory</span>
+              <span class="pill pill-b">Weather API</span>
+            </td>
+          </tr>
+          <tr>
+            <td>User control</td>
+            <td>Mood arc slider (Energize → Maintain → Wind down). Manual override at any point. Per-session memory toggle for privacy.</td>
+          </tr>
+          <tr>
+            <td>Platforms</td>
+            <td>iOS, Android (v1). Desktop + Car View (v2). Full parity in Premium. Lite version for Free tier.</td>
+          </tr>
+          <tr>
+            <td>Privacy</td>
+            <td>Mood inference runs on-device where possible. No raw audio captured. Session data not retained unless user opts into Cross-Session Memory.</td>
+          </tr>
+          <tr>
+            <td>Edge cases</td>
+            <td>Cold-start: defaults to genre selection. Multi-user households: per-profile isolation. Offline: fallback to downloaded tracks closest to last detected mood.</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- METRICS -->
+      <div class="cs-section">
+        <div class="cs-section-label">Success Metrics</div>
+        <div class="metrics-grid">
+          <div class="m-card"><div class="m-val g">–22%</div><div class="m-lbl">Skip rate during sessions</div></div>
+          <div class="m-card"><div class="m-val b">+18 min</div><div class="m-lbl">Avg daily listening (Premium)</div></div>
+          <div class="m-card"><div class="m-val a">+11%</div><div class="m-lbl">Artist discovery rate / month</div></div>
+          <div class="m-card"><div class="m-val g">40%</div><div class="m-lbl">Sessions → "Save playlist" CTA</div></div>
+          <div class="m-card"><div class="m-val b">D30 +8%</div><div class="m-lbl">Retention vs control group</div></div>
+          <div class="m-card"><div class="m-val a">4.4★</div><div class="m-lbl">Feature CSAT target</div></div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <div style="font-size: 10px; color: #3a3a3a; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px;">Guardrails</div>
+          <div class="rail"><div class="rdot r"></div><div class="rtxt">Skip rate increases vs baseline — model may be over-correcting mood arcs</div></div>
+          <div class="rail"><div class="rdot r"></div><div class="rtxt">Uptick in "Turn off mood tracking" — indicates trust or transparency concern</div></div>
+          <div class="rail"><div class="rdot g"></div><div class="rtxt">Feature opt-in targets 35% of MAU within 90 days of launch</div></div>
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div class="cs-section">
+        <div class="cs-section-label">Launch Roadmap</div>
+        <div class="roadmap">
+          <div class="rm-phase done">
+            <div class="rm-q">Q1</div>
+            <div class="rm-t">Internal alpha — signal pipeline + model v1</div>
+          </div>
+          <div class="rm-phase now">
+            <div class="rm-q">Q2</div>
+            <div class="rm-t">Closed beta — 5k Premium users, 3 markets</div>
+          </div>
+          <div class="rm-phase">
+            <div class="rm-q">Q3</div>
+            <div class="rm-t">Global Premium rollout + calendar integration</div>
+          </div>
+          <div class="rm-phase">
+            <div class="rm-q">Q4</div>
+            <div class="rm-t">Free tier lite + social sharing of Mood Journeys</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cs-body -->
+  </div><!-- /case-study -->
+
+  <!-- ── PLACEHOLDER CARDS ── -->
+  <div class="placeholder-grid" id="about">
+    <div class="ph-card">
+      <div>
+        <div class="ph-top">
+          <div class="ph-logo">🦆</div>
+          <div class="ph-co">Duolingo</div>
+        </div>
+        <div class="ph-title">AI Streak Coach</div>
+        <div class="ph-sub">Adaptive motivation engine that personalizes nudges based on learning velocity and streak risk signals.</div>
+      </div>
+      <span class="ph-badge">Coming soon</span>
+    </div>
+    <div class="ph-card">
+      <div>
+        <div class="ph-top">
+          <div class="ph-logo">📦</div>
+          <div class="ph-co">Amazon</div>
+        </div>
+        <div class="ph-title">Intent-Aware Search</div>
+        <div class="ph-sub">Multimodal search that infers purchase intent from browsing context, past orders, and seasonal signals.</div>
+      </div>
+      <span class="ph-badge">Coming soon</span>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">PM <span>Portfolio</span> · AI Feature Work · 2026</div>
+  <div class="footer-right">Built to ship · Designed to feel right</div>
+</footer>
+
+</body>
+</html>
